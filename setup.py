@@ -17,5 +17,10 @@ for rule in rules:
     app.add_url_rule(rule["rule"], rule["name"], rule["method"])
 
 
+@app.route('/favicon.ico', methods=['GET', 'POST'])
+def game():
+    return "Hello!"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
