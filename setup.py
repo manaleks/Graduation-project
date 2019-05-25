@@ -1,30 +1,23 @@
 # -*- coding: utf8 -*-
-import os
-from flask import Flask, request, render_template
-
+from flask import Flask, render_template, Response
+from camera import VideoCamera
 
 app = Flask(__name__)
 
-def main_page():
-    return render_template('main.html')
-def simple_text(num):
-    return "Hello!" + str(num)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-rules = []
-rules.append({"rule":'/',"name":"main_page","method":main_page})
-rules.append({"rule":'/simple_text/<num>',"name":"simple_text","method":simple_text})
-for rule in rules:
-    app.add_url_rule(rule["rule"], rule["name"], rule["method"])
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(VideoCamera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/favicon.ico', methods=['GET', 'POST'])
-def favicon():
-    return "Hello!"
-
-@app.route('/', methods=['GET', 'POST'])
-def main_page2():
-    return "Hello!!!!"
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
