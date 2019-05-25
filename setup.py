@@ -18,8 +18,12 @@ for rule in rules:
 
 
 @app.route('/favicon.ico', methods=['GET', 'POST'])
-def game():
+def favicon():
     return "Hello!"
+
+@app.route('/', methods=['GET', 'POST'])
+def main_page2():
+    return "Hello!!!!"
 
 
 if __name__ == "__main__":
