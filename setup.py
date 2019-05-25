@@ -1,8 +1,13 @@
 # -*- coding: utf8 -*-
 from flask import Flask, render_template, Response
 from camera import VideoCamera
-
+import cv2
 app = Flask(__name__)
+
+
+@app.route('/hello')
+def hello():
+    return 'Hello world'
 
 @app.route('/')
 def index():
@@ -16,6 +21,11 @@ def gen(camera):
 
 @app.route('/video_feed')
 def video_feed():
+    return Response(gen(VideoCamera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/video_inverse')
+def video_inverse():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
