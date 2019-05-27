@@ -22,7 +22,7 @@ class painter(object):
         # output_str is a base64 string in ascii
         output_str = self.pil_image_to_base64(output_img)
 
-        nparr = np.array(input_img)
+        #nparr = np.array(input_img)
         #img_np = cv2.cvtColor(nparr, cv2.COLOR_RGB2BGR)
         #print(img_np)
 
