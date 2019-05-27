@@ -1,31 +1,28 @@
+# -*- coding: utf8 -*-
 from sys import stdout
-from makeup_artist import Makeup_artist
 import logging
 from flask import Flask, render_template, Response
 from flask_socketio import SocketIO
-from camera import Camera
-from utils import base64_to_pil_image, pil_image_to_base64
 
+from camera import Camera
+from painter import painter
 
 app = Flask(__name__)
 app.logger.addHandler(logging.StreamHandler(stdout))
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = 'secret!'    
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
-camera = Camera(Makeup_artist())
+camera = Camera(painter())
 
 
 @socketio.on('input image', namespace='/test')
 def test_message(input):
     input = input.split(",")[1]
     camera.enqueue_input(input)
-    #camera.enqueue_input(base64_to_pil_image(input))
-
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
     app.logger.info("client connected")
-
 
 @app.route('/')
 def index():
@@ -35,10 +32,9 @@ def index():
 
 def gen():
     """Video streaming generator function."""
-
     app.logger.info("starting to generate frames!")
     while True:
-        frame = camera.get_frame() #pil_image_to_base64(camera.get_frame())
+        frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 

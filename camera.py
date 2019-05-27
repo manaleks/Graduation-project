@@ -1,14 +1,14 @@
+# -*- coding: utf8 -*-
 import threading
 import binascii
 from time import sleep
-from utils import base64_to_pil_image, pil_image_to_base64
 
 
 class Camera(object):
-    def __init__(self, makeup_artist):
+    def __init__(self, painter):
         self.to_process = []
         self.to_output = []
-        self.makeup_artist = makeup_artist
+        self.painter = painter
 
         thread = threading.Thread(target=self.keep_processing, args=())
         thread.daemon = True
@@ -20,17 +20,7 @@ class Camera(object):
 
         # input is an ascii string. 
         input_str = self.to_process.pop(0)
-
-        # convert it to a pil image
-        input_img = base64_to_pil_image(input_str)
-
-        ################## where the hard work is done ############
-        # output_img is an PIL image
-        output_img = self.makeup_artist.apply_makeup(input_img)
-
-        # output_str is a base64 string in ascii
-        output_str = pil_image_to_base64(output_img)
-
+        output_str = self.painter.change_str(input_str)
         # convert eh base64 string in ascii to base64 string in _bytes_
         self.to_output.append(binascii.a2b_base64(output_str))
 
