@@ -4,7 +4,6 @@ import sys
 sys.path.insert(0, 'src')
 import os, random, subprocess, evaluate, shutil
 from utils import exists, list_files
-import pdb
 
 TMP_DIR = '.fns_frames_%s/' % random.randint(0,99999)
 DEVICE = '/gpu:0'
