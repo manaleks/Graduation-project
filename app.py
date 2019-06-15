@@ -19,7 +19,7 @@ import sys
 BASE_FOLDER = sys.path[0]
 UPLOAD_FOLDER = '{}/inputs'.format(BASE_FOLDER)
 OUTLOAD_FOLDER = '{}/results'.format(BASE_FOLDER)
-CHECKPOINT = '{}/models/rain-princess-network'.format(BASE_FOLDER)
+CHECKPOINT = '{}/models/la_muse.ckpt'.format(BASE_FOLDER)
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 BATCH_SIZE = 4
@@ -101,4 +101,4 @@ def game():
 
 
 if __name__ == "__main__":
-    app.run(port = 5001)
+    app.run()
