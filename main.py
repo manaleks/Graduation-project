@@ -37,8 +37,9 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# SERV
 @app.route('/', methods=['GET', 'POST'])
-def game():
+def server_work():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -70,7 +71,7 @@ def game():
             return redirect(url_for('get_file',
                                     filename=filename, model=model))
 
-    return render_template('index.html', models=MODELS)
+    return render_template('server_work.html', models=MODELS)
 
 
 @app.route('/uploads/<filename>/<model>', methods=['GET', 'POST'])
@@ -91,8 +92,6 @@ def get_file(filename,model):
 
     return send_from_directory(app.config['OUTLOAD_FOLDER'], filename)
 
-
-
 @app.route('/images/<filename>', methods=['GET', 'POST'])
 def get_image(filename):
 
@@ -105,9 +104,19 @@ def get_image(filename):
     return send_from_directory(BASE_FOLDER+'/static/images/', filename)
 
 
+
+# JS
+@app.route('/client_work', methods=['GET', 'POST'])
+def client_work():
+    return render_template('index.html')
+
+
+# Icon
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5005)
