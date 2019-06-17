@@ -91,5 +91,18 @@ def get_file(filename,model):
 
     return send_from_directory(app.config['OUTLOAD_FOLDER'], filename)
 
+
+
+@app.route('/images/<filename>', methods=['GET', 'POST'])
+def get_image(filename):
+
+
+    print(filename)
+    print(BASE_FOLDER)
+
+    print(BASE_FOLDER + filename)
+
+    return send_from_directory(BASE_FOLDER+'/static/images/', filename)
+
 if __name__ == "__main__":
     app.run()
