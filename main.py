@@ -19,7 +19,12 @@ BASE_FOLDER = sys.path[0]
 
 UPLOAD_FOLDER = '{}/inputs'.format(BASE_FOLDER)
 OUTLOAD_FOLDER = '{}/results'.format(BASE_FOLDER)
-CHECKPOINT = '{}/models/la_muse.ckpt'.format(BASE_FOLDER)
+CHECKPOINT = '{}/models/'.format(BASE_FOLDER)
+
+MODELS = ["dora-marr-network","rain-princess-network", "starry-night-network",
+"la_muse.ckpt","rain_princess.ckpt","scream.ckpt",
+"udnie.ckpt","wave.ckpt", "wreck.ckpt"]                    
+
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 BATCH_SIZE = 4
@@ -56,17 +61,26 @@ def game():
             # add new file
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             
+            model = request.form['models']
+            # Set used model on top
+            MODELS.remove(model)
+            MODELS.insert(0, model)
+
+
             return redirect(url_for('get_file',
-                                    filename=filename))
-    return render_template('index.html')
+                                    filename=filename, model=model))
+
+    return render_template('index.html', models=MODELS)
 
 
-@app.route('/uploads/<filename>', methods=['GET', 'POST'])
-def get_file(filename):
+@app.route('/uploads/<filename>/<model>', methods=['GET', 'POST'])
+def get_file(filename,model):
     files = list_files(UPLOAD_FOLDER)
     full_in = [os.path.join(UPLOAD_FOLDER,x) for x in files]
     full_out = [os.path.join(OUTLOAD_FOLDER,x) for x in files]
-    ffwd_different_dimensions(full_in, full_out, CHECKPOINT, device_t=DEVICE,
+    checkpoint = CHECKPOINT + model
+    print(checkpoint)
+    ffwd_different_dimensions(full_in, full_out, checkpoint, device_t=DEVICE,
                     batch_size=BATCH_SIZE)
 
     # delete files
@@ -76,7 +90,6 @@ def get_file(filename):
     print(filename)
 
     return send_from_directory(app.config['OUTLOAD_FOLDER'], filename)
-
 
 if __name__ == "__main__":
     app.run()

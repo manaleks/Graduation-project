@@ -38,7 +38,9 @@ limitations under the License.
   <!-- Bootstrap core CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
   <script src="{{ url_for('static', filename='dist/bundle.js') }}"></script>
-</head>
+  <!-- w3.CSS -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  </head>
 
 <style>
   .centered {
@@ -48,16 +50,23 @@ limitations under the License.
 </style>
 
 <body>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
+  <h1>Upload new File</h1>
+  <form method=post enctype=multipart/form-data> <p><input type=file name=file>
+      <div class="input-group">
+        <span class="input-group-addon">Model</span>
+        <select name="models" class="selectpicker form-control">
+          {% for o in models %}
+          <option type="text" value="{{o}}"> {{o}} </option>
+          {% endfor %}
+        </select>
+      </div>
+      <input type=submit value=Upload>
+  </form>
 
 
   <input type="file" id="file-select" style="display: none" accept="image/x-png,image/gif,image/jpeg" />
   <!-- As a heading -->
-  
+
   <div class="">
     <div id="mobile-warning" hidden class="alert alert-warning" role="alert">
       This site may have problems functioning on mobile devices.
