@@ -16,7 +16,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <title>Arbitrary Style Transfer in the Browser</title>
+  <title>Style Transfer</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
@@ -27,7 +27,9 @@
   <script src="{{ url_for('static', filename='dist/bundle.js') }}"></script>
   <!-- w3.CSS -->
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  </head>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
 
 <style>
   .centered {
@@ -37,28 +39,25 @@
 </style>
 
 <body>
+
   <h1>Upload new File</h1>
   <form method=post enctype=multipart/form-data> <p><input type=file name=file>
-      <div class="input-group">
-        <span class="input-group-addon">Model</span>
-        <select name="models" class="selectpicker form-control">
-          {% for o in models %}
-          <option type="text" value="{{o}}"> {{o}} </option>
-          {% endfor %}
-        </select>
-      </div>
-      <input type=submit value=Upload>
+    <div class="input-group">
+      <span class="input-group-addon">Model</span>
+      <select name="models" class="selectpicker form-control">
+        {% for o in models %}
+        <option type="text" value="{{o}}"> {{o}} </option>
+        {% endfor %}
+      </select>
+    </div>
+    <input type=submit value=Upload>
   </form>
 
 
   <input type="file" id="file-select" style="display: none" accept="image/x-png,image/gif,image/jpeg" />
-  <!-- As a heading -->
 
   <div class="">
-    <div id="mobile-warning" hidden class="alert alert-warning" role="alert">
-      This site may have problems functioning on mobile devices.
-      Don't worry, you can still read the description below!
-    </div>
+
     <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="stylize-tab" data-toggle="tab" href="#stylize" role="tab" aria-controls="stylize"
@@ -69,7 +68,10 @@
           aria-selected="false">Combine two styles</a>
       </li>
     </ul>
+
+
     <div class="tab-content" id="myTabContent">
+
       <div class="tab-pane fade show active" id="stylize" role="tabpanel" aria-labelledby="stylize-tab">
         <div class="container">
           <div class="row my-4">
@@ -84,7 +86,7 @@
               <br>
               <select id="content-select" class="centered custom-select">
                 <option value="" disabled>Select content</option>
-                <option value="pic">Take a picture</option>
+                <!--  <option value="pic">Take a picture</option> -->
                 <option value="file">Select from file</option>
                 <option value="stata">stata</option>
                 <option value="diana">diana</option>
@@ -118,6 +120,7 @@
                 <option value="seaport" selected="selected">seaport</option>
                 <option value="red_circles">red_circles</option>
                 <option value="zigzag">zigzag</option>
+                <option value="scream">scream</option>
               </select>
             </div>
           </div>
@@ -144,6 +147,8 @@
           </div>
         </div>
       </div>
+
+
       <div class="tab-pane fade" id="combine" role="tabpanel" aria-labelledby="combine-tab">
         <div class="container">
           <div class="row my-4">
@@ -246,7 +251,9 @@
           </div>
         </div>
       </div>
+
     </div>
+
 
     <div class="container">
       <div class="row my-4">
@@ -266,8 +273,9 @@
     </div>
 
     <canvas id="hidden-canvas" style="display: none"></canvas>
-    <div class="modal fade" id="cam-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
+
+    <div class="modal fade" id="cam-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" 
+    aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -285,7 +293,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- JQuery -->
