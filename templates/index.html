@@ -88,17 +88,12 @@
                 <option value="" disabled>Select content</option>
                 <!--  <option value="pic">Take a picture</option> -->
                 <option value="file">Select from file</option>
-                <option value="stata">stata</option>
-                <option value="diana">diana</option>
-                <option value="golden_gate">golden_gate</option>
-                <option value="beach">beach</option>
                 <option value="chicago" selected="selected">chicago</option>
-                <option value="statue_of_liberty">statue_of_liberty</option>
               </select>
             </div>
             <div class="col mx-5 my-4">
               <img id="style-img" class="centered" crossorigin="anonymous"
-                src="{{ url_for('static', filename='images/seaport.jpg') }}" height=256></img>
+                src="{{ url_for('static', filename='images/udnie.jpg') }}" height=256></img>
               <br>
               <label for="style-img-size">Style image size</label>
               <i class="far fa-question-circle" data-toggle="tooltip" data-placement="top"
@@ -108,19 +103,22 @@
               <input type="range" min="100" max="400" value="256" class="custom-range centered" id="style-img-size">
               <br>
               <select id="style-select" class="centered custom-select">
-                <option value="" disabled>Select a style</option>
-                <option value="file">Select from file</option>
-                <option value="random">Random image from wikiart.org</option>
-                <option value="udnie">udnie</option>
+                <option value="" disabled>Select style</option>
+                <option value="udnie" selected="selected">udnie</option>
+                <option value="scream">scream</option>
+                <option value="la_muse">la_muse</option>
+                <option value="wave">wave</option>
+                <option value="wreck">wreck</option>
+                <option value="rain_princess">rain_princess</option>
+                <option value="starry_night">starry_night</option>
+                <option value="dora-maar-picasso">dora-maar-picasso</option>
+
                 <option value="stripes">stripes</option>
                 <option value="bricks">bricks</option>
-                <option value="clouds">clouds</option>
-                <option value="towers">towers</option>
                 <option value="sketch">sketch</option>
-                <option value="seaport" selected="selected">seaport</option>
+                <option value="seaport">seaport</option>
                 <option value="red_circles">red_circles</option>
                 <option value="zigzag">zigzag</option>
-                <option value="scream">scream</option>
               </select>
             </div>
           </div>
