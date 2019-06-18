@@ -79,6 +79,7 @@ def get_file(filename,model):
     files = list_files(UPLOAD_FOLDER)
     full_in = [os.path.join(UPLOAD_FOLDER,x) for x in files]
     full_out = [os.path.join(OUTLOAD_FOLDER,x) for x in files]
+    print(full_out)
     checkpoint = CHECKPOINT + model
     print(checkpoint)
     ffwd_different_dimensions(full_in, full_out, checkpoint, device_t=DEVICE,
@@ -92,23 +93,26 @@ def get_file(filename,model):
 
     return send_from_directory(app.config['OUTLOAD_FOLDER'], filename)
 
-@app.route('/images/<filename>', methods=['GET', 'POST'])
-def get_image(filename):
+@app.route('/video_feed/<param>/<folder>')
+def video_feed(param,folder):
+    print(folder)
+    print(param)
+    return send_from_directory('/home/manaleks/Graduation-project/static/images', 'chicago.jpg')
 
-
-    print(filename)
-    print(BASE_FOLDER)
-
-    print(BASE_FOLDER + filename)
-
-    return send_from_directory(BASE_FOLDER+'/static/images/', filename)
-
+@app.route('/video_feed2')
+def video_feed2():
+    return send_from_directory('/home/manaleks/Graduation-project/static/images', 'chicago.jpg')
 
 
 # JS
 @app.route('/client_work', methods=['GET', 'POST'])
 def client_work():
     return render_template('index.html')
+
+
+@app.route('/images/<filename>', methods=['GET', 'POST'])
+def get_image(filename):
+    return send_from_directory(BASE_FOLDER+'/static/images/', filename)
 
 
 # Icon
