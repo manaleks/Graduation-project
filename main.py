@@ -11,6 +11,7 @@ from utils import list_files
 from evaluate import ffwd_different_dimensions
 
 import shutil
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -37,6 +38,7 @@ MODELS = ["dora-marr-network", "starry-night-network",
 "la_muse.ckpt","rain_princess.ckpt","scream.ckpt",
 "udnie.ckpt","wave.ckpt", "wreck.ckpt"]                    
 
+count_quota = []
 
 file_folder_number = 0
 
@@ -63,8 +65,9 @@ def server_work():
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
-          #  flash('No selected file')
-            return redirect(request.url)
+            return render_template('server_work.html', models=MODELS, 
+                                    info_mess='No selected file')
+            #return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             
@@ -106,11 +109,29 @@ def server_work():
             return redirect(url_for('get_file',
                                     model=model, image_number=new_upload_num, filename=filename))
 
-    return render_template('server_work.html', models=MODELS)
+    return render_template('server_work.html', models=MODELS, info_mess='')
 
 
 @app.route('/uploads/<model>/<image_number>/<filename>', methods=['GET', 'POST'])
 def get_file(filename,image_number,model):
+
+    # check count quota
+    if len(count_quota) > 2:
+        return render_template('server_work.html', models=MODELS, info_mess='sorry, quota is 2. Check after second')
+
+
+    # chech image resolution
+    folder_path = os.path.join(UPLOAD_FOLDER,str(image_number))
+    image_path = os.path.join(folder_path,str(filename))
+    im = Image.open(image_path)
+    width, height = im.size
+    print(width)
+    print(height)
+    if width + height > 4000:
+        return render_template('server_work.html', models=MODELS, info_mess='sorry, this file is too big')
+
+    # add count
+    count_quota.append(1)
 
     # get new folders for this photo
     new_file_path = os.path.join(UPLOAD_FOLDER,str(image_number))
@@ -124,8 +145,12 @@ def get_file(filename,image_number,model):
     print(checkpoint)
     ffwd_different_dimensions(full_in, full_out, checkpoint, device_t=DEVICE,
                     batch_size=BATCH_SIZE)
-    print(filename)
+    
+    if len(count_quota) > 0:
+        count_quota.pop(0)
 
+    print(filename)
+    
     return send_from_directory(ready_file_path, filename)
 
 
