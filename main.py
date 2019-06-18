@@ -10,6 +10,8 @@ from werkzeug.utils import secure_filename
 from utils import list_files
 from evaluate import ffwd_different_dimensions
 
+import shutil
+
 app = Flask(__name__)
 
 ############################################################################################################
@@ -21,10 +23,22 @@ UPLOAD_FOLDER = '{}/inputs'.format(BASE_FOLDER)
 OUTLOAD_FOLDER = '{}/results'.format(BASE_FOLDER)
 CHECKPOINT = '{}/models/'.format(BASE_FOLDER)
 
-MODELS = ["dora-marr-network","rain-princess-network", "starry-night-network",
+# recreate inputs
+if os.path.isdir(UPLOAD_FOLDER):
+    shutil.rmtree(UPLOAD_FOLDER)
+os.mkdir(UPLOAD_FOLDER)
+# recreate results
+if os.path.isdir(OUTLOAD_FOLDER):
+    shutil.rmtree(OUTLOAD_FOLDER)
+os.mkdir(OUTLOAD_FOLDER)
+
+
+MODELS = ["dora-marr-network", "starry-night-network",
 "la_muse.ckpt","rain_princess.ckpt","scream.ckpt",
 "udnie.ckpt","wave.ckpt", "wreck.ckpt"]                    
 
+
+file_folder_number = 0
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 BATCH_SIZE = 4
@@ -54,13 +68,34 @@ def server_work():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             
-            # delete files
-            files = list_files(UPLOAD_FOLDER)
-            for file_name in files:
-                os.unlink(os.path.join(UPLOAD_FOLDER,file_name))
+                      
+            # Get new folder num
+            upload_list = os.listdir(UPLOAD_FOLDER)
+            print(upload_list)
+
+            if len(upload_list) == 0:
+                new_upload_num = 0
+            else:
+                new_upload_num = int(max([int(x) for x in upload_list])) + 1
+            print(new_upload_num)
+
+            # Create upload folder
+            input_folder_path = os.path.join(UPLOAD_FOLDER,str(new_upload_num))
+            os.mkdir(input_folder_path)
+
+            # if the are this dir
+            output_folder_path = os.path.join(OUTLOAD_FOLDER,str(new_upload_num))
+            if os.path.isdir(output_folder_path):
+                #os.rmdir(output_folder_path) 
+                shutil.rmtree(output_folder_path)
+
+            # Create outload folder
+            print(new_upload_num)
+            os.mkdir(output_folder_path)
 
             # add new file
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            path_to_save = os.path.join(app.config['UPLOAD_FOLDER'],str(new_upload_num))
+            file.save(os.path.join(path_to_save, filename))
             
             model = request.form['models']
             # Set used model on top
@@ -69,29 +104,29 @@ def server_work():
 
 
             return redirect(url_for('get_file',
-                                    filename=filename, model=model))
+                                    model=model, image_number=new_upload_num, filename=filename))
 
     return render_template('server_work.html', models=MODELS)
 
 
-@app.route('/uploads/<filename>/<model>', methods=['GET', 'POST'])
-def get_file(filename,model):
-    files = list_files(UPLOAD_FOLDER)
-    full_in = [os.path.join(UPLOAD_FOLDER,x) for x in files]
-    full_out = [os.path.join(OUTLOAD_FOLDER,x) for x in files]
+@app.route('/uploads/<model>/<image_number>/<filename>', methods=['GET', 'POST'])
+def get_file(filename,image_number,model):
+
+    # get new folders for this photo
+    new_file_path = os.path.join(UPLOAD_FOLDER,str(image_number))
+    ready_file_path = os.path.join(OUTLOAD_FOLDER,str(image_number))
+
+    files = list_files(new_file_path)
+    full_in = [os.path.join(new_file_path,x) for x in files]
+    full_out = [os.path.join(ready_file_path,x) for x in files]
     print(full_out)
     checkpoint = CHECKPOINT + model
     print(checkpoint)
     ffwd_different_dimensions(full_in, full_out, checkpoint, device_t=DEVICE,
                     batch_size=BATCH_SIZE)
-
-    # delete files
-    for file_name in files:
-        os.unlink(os.path.join(UPLOAD_FOLDER,file_name))
-
     print(filename)
 
-    return send_from_directory(app.config['OUTLOAD_FOLDER'], filename)
+    return send_from_directory(ready_file_path, filename)
 
 
 # JS
