@@ -93,16 +93,6 @@ def get_file(filename,model):
 
     return send_from_directory(app.config['OUTLOAD_FOLDER'], filename)
 
-@app.route('/video_feed/<param>/<folder>')
-def video_feed(param,folder):
-    print(folder)
-    print(param)
-    return send_from_directory('/home/manaleks/Graduation-project/static/images', 'chicago.jpg')
-
-@app.route('/video_feed2')
-def video_feed2():
-    return send_from_directory('/home/manaleks/Graduation-project/static/images', 'chicago.jpg')
-
 
 # JS
 @app.route('/client_work', methods=['GET', 'POST'])
@@ -123,4 +113,4 @@ def favicon():
 
 
 if __name__ == "__main__":
-    app.run(port=5005)
+    app.run(port=5000)
