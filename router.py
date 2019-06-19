@@ -30,6 +30,9 @@ def main():
         if file.filename == '':
             return render_template('main.html', models=MODELS, info_mess='No selected file')
 
+        print(type(file))
+        print(file)
+
         url = 'http://180a7fd8.ngrok.io/'
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         files = {'file': open('static/images/bricks.jpg', 'rb')}
@@ -39,7 +42,9 @@ def main():
         print(type(r))
         print(type(r.text))
         print(type(r.content))
-        print(r.content.decode())
+        i = Image.open(BytesIO(r.content))
+        print(type(i))
+        print(i)
 
 
         return render_template('main.html', models=MODELS, info_mess='all_ok')
@@ -51,12 +56,6 @@ def main():
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-
-#if __name__ == "__main__":
-#    app.run()
-
-
 
 
 """
