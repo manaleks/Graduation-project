@@ -1,3 +1,4 @@
+shutil
 gunicorn
 requests
 pillow

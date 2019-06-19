@@ -4,6 +4,7 @@ from io import BytesIO
 
 import os
 import sys
+import shutil
 from flask import Flask
 from flask import request
 from flask import redirect
