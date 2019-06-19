@@ -51,8 +51,34 @@ def main():
         print(file)
         print(filename)
 
+
+        # Get new folder num
+        upload_list = os.listdir(upload_images_dir)
+        print(upload_list)
+
+        if len(upload_list) == 0:
+            image_number = 0
+        else:
+            image_number = int(max([int(x) for x in upload_list])) + 1
+        print(image_number)
+
+        # Create upload folder
+        input_folder_path = os.path.join(upload_images_dir,str(image_number))
+        print(input_folder_path)
+        os.mkdir(input_folder_path)
+
+        # if the are this dir
+        output_folder_path = os.path.join(ready_images_dir,str(image_number))
+        if os.path.isdir(output_folder_path):
+            shutil.rmtree(output_folder_path)
+
+        # Create outload folder
+        print(output_folder_path)
+        os.mkdir(output_folder_path)
+
+
         # save upload file
-        upload_file_path = os.path.join(upload_images_dir,filename)
+        upload_file_path = os.path.join(input_folder_path,filename)
         file.save(upload_file_path)
 
 
@@ -97,20 +123,21 @@ def main():
         print(type(i))
         print(i)
 
-        ready_file_path = os.path.join(ready_images_dir,filename)
+        ready_file_path = os.path.join(output_folder_path,filename)
 
         print(ready_file_path)
 
         i.save(ready_file_path)
 
-        return render_template('main.html', models=MODELS, info_mess='all_ok', filename=filename)
+        return render_template('main.html', models=MODELS, info_mess='all_ok', image_number=image_number, filename=filename)
 
     return render_template('main.html', models=MODELS, info_mess='')
 
 
-@app.route('/video_feed/<filename>')
-def video_feed(filename):
-    return send_from_directory(ready_images_dir, filename)
+@app.route('/video_feed/<image_number>/<filename>')
+def video_feed(image_number,filename):
+    file_folder = os.path.join(ready_images_dir,str(image_number))
+    return send_from_directory(file_folder, filename)
 
 @app.route('/run_hello')
 def run_hello():
