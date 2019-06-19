@@ -3,6 +3,7 @@ from PIL import Image
 from io import BytesIO
 
 import os
+import sys
 from flask import Flask
 from flask import request
 from flask import redirect
@@ -10,6 +11,8 @@ from flask import url_for
 from flask import render_template
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
+
+root_dir = sys.path[0]
 
 app = Flask(__name__)
 
@@ -30,6 +33,8 @@ def main():
         if file.filename == '':
             return render_template('main.html', models=MODELS, info_mess='No selected file')
 
+        filename = file.filename
+
         print(type(file))
         print(file)
 
@@ -46,15 +51,20 @@ def main():
         print(type(i))
         print(i)
 
+        file_path = root_dir + '/' + filename
 
-        return render_template('main.html', models=MODELS, info_mess='all_ok', filename='bricks.jpg')
+        print(file_path)
+
+        i.save(file_path)
+
+        return render_template('main.html', models=MODELS, info_mess='all_ok', filename=filename)
 
     return render_template('main.html', models=MODELS, info_mess='')
 
 
-@app.route('/database_download/<filename>')
-def database_download(filename):
-    return send_from_directory('static/images', filename)
+@app.route('/video_feed/<filename>')
+def video_feed(filename):
+    return send_from_directory(root_dir, filename)
 
 # Icon
 @app.route('/favicon.ico')
