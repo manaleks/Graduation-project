@@ -1,1 +1,1 @@
-web: python router.py --log-file=-
+web: gunicorn router:app
