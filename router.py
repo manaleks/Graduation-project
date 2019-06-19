@@ -47,9 +47,14 @@ def main():
         print(i)
 
 
-        return render_template('main.html', models=MODELS, info_mess='all_ok')
+        return render_template('main.html', models=MODELS, info_mess='all_ok', filename='bricks.jpg')
 
     return render_template('main.html', models=MODELS, info_mess='')
+
+
+@app.route('/database_download/<filename>')
+def database_download(filename):
+    return send_from_directory('static/images', filename)
 
 # Icon
 @app.route('/favicon.ico')
