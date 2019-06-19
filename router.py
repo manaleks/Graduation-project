@@ -67,23 +67,25 @@ def main():
 
         # make url
         url = 'http://180a7fd8.ngrok.io/'
-        get_model = request.form.get('models')
-        print(get_model)
 
-        if get_model:
-            model = get_model
+
+        # get model_name
+        model_name = request.form.get('models')
+        print(model_name)
+
+        if model_name:
             # Set used model on top
-            MODELS.remove(model)
-            MODELS.insert(0, model)
+            MODELS.remove(model_name)
+            MODELS.insert(0, model_name)
         else:
-            model = MODELS[0]
-        print(model)
+            model_name = MODELS[0]
+        print(model_name)
 
-        model_url = url + str(model)
-        print(model_url)
+        #model_url = url + str(model)
+        #print(model_url)
 
         # image processing
-        r = requests.post(model_url, headers=headers, files=files)
+        r = requests.post(url, headers=headers, files=files, data = {'models':model_name})
 
         # save ready image
         print(r)
