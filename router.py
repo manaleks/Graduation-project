@@ -55,16 +55,35 @@ def main():
         upload_file_path = os.path.join(upload_images_dir,filename)
         file.save(upload_file_path)
 
-        # image processing
-        url = 'http://180a7fd8.ngrok.io/'
+
+        # prepare image processing
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
+        # get file
         file_to_load_open = open(upload_file_path, 'rb')
         print(file_to_load_open)
         print(type(file_to_load_open))
-
         files = {'file': file_to_load_open}
-        r = requests.post(url, headers=headers, files=files)
+
+        # make url
+        url = 'http://180a7fd8.ngrok.io/'
+        get_model = request.form.get('models')
+        print(get_model)
+
+        if get_model:
+            model = get_model
+            # Set used model on top
+            MODELS.remove(model)
+            MODELS.insert(0, model)
+        else:
+            model = MODELS[0]
+        print(model)
+
+        model_url = url + str(model)
+        print(model_url)
+
+        # image processing
+        r = requests.post(model_url, headers=headers, files=files)
 
         # save ready image
         print(r)
@@ -94,7 +113,7 @@ def video_feed(filename):
 @app.route('/run_hello')
 def run_hello():
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-    r = requests.post("https://manaleks.herokuapp.com/hello", headers=headers, data = {'model':'SUPERHELLO'})
+    r = requests.post("https://manaleks.herokuapp.com/hello", headers=headers, data = {'models':'SUPERHELLO'})
 
     # save ready image
     print(r)
@@ -110,16 +129,16 @@ def run_hello():
 def hello():
 
     try:
-        model = request.args.get('model')
+        model = request.args.get('models')
         print('hello get: '+ str(model))
     except:
-        print("dont work: model = request.args.get('model')")
+        print("dont work: model = request.args.get('models')")
 
     try:
         model = request.form.get('models')
         print('hello get: '+ str(model))
     except:
-        print("dont work: model = request.args.get('model')")
+        print("dont work: model = request.args.get('models')")
 
     return 'hello: ' + str(model)
 
