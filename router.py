@@ -14,9 +14,14 @@ from flask import send_from_directory
 from werkzeug.utils import secure_filename
 
 root_dir = sys.path[0]
-ready_images_dir = os.path.join(sys.path[0],'ready_images')
+upload_images_dir = os.path.join(sys.path[0],'upload_images_dir')
+ready_images_dir = os.path.join(sys.path[0],'ready_images_dir')
 
-# recreate inputs
+# recreate upload_images_dir
+if os.path.isdir(upload_images_dir):
+    shutil.rmtree(upload_images_dir)
+os.mkdir(upload_images_dir)
+# recreate ready_images_dir
 if os.path.isdir(ready_images_dir):
     shutil.rmtree(ready_images_dir)
 os.mkdir(ready_images_dir)
@@ -46,15 +51,19 @@ def main():
         print(file)
         print(filename)
 
+        # save upload file
+        upload_file_path = os.path.join(upload_images_dir,filename)
+        file.save(upload_file_path)
+
         # image processing
         url = 'http://180a7fd8.ngrok.io/'
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
-        #file_to_load_open = open('static/images/bricks.jpg', 'rb')
-        #print(file_to_load_open)
-        #print(type(file_to_load_open))
+        file_to_load_open = open(upload_file_path, 'rb')
+        print(file_to_load_open)
+        print(type(file_to_load_open))
 
-        files = {'file': file}
+        files = {'file': file_to_load_open}
         r = requests.post(url, headers=headers, files=files)
 
         # save ready image
@@ -67,11 +76,11 @@ def main():
         print(type(i))
         print(i)
 
-        file_path = os.path.join(ready_images_dir,filename)
+        ready_file_path = os.path.join(ready_images_dir,filename)
 
-        print(file_path)
+        print(ready_file_path)
 
-        i.save(file_path)
+        i.save(ready_file_path)
 
         return render_template('main.html', models=MODELS, info_mess='all_ok', filename=filename)
 
