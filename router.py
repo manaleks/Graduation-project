@@ -49,7 +49,12 @@ def main():
         # image processing
         url = 'http://180a7fd8.ngrok.io/'
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-        files = {'file': open('static/images/bricks.jpg', 'rb')}
+
+        file_to_load_open = open('static/images/bricks.jpg', 'rb')
+        print(file_to_load_open)
+        print(type(file_to_load_open))
+
+        files = {'file': file}
         r = requests.post(url, headers=headers, files=files)
 
         # save ready image
