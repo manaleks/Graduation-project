@@ -1,32 +1,53 @@
 <!DOCTYPE html>
-
 <html>
   <head>
-
+      <title>Style Transfer</title>
+	    <meta charset="utf-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	    <link rel="stylesheet" type="text/css" href="../static/style.css">
   </head>
   <body>
-    <div id="app">
-        <h1>Upload new File</h1>
-        <form method=post enctype=multipart/form-data> <p>
-          <input type=file name=file>
-          <div class="input-group">
-            <span class="input-group-addon">Model</span>
-            <select name="models" class="selectpicker form-control">
-              {% for o in models %}
-              <option type="text" value="{{o}}"> {{o}} </option>
-              {% endfor %}
-            </select>
+    <div id="app" class="st-main">
+      <div class="st-main-top">
+        <div class="st-main-logo-block">
+          <img src="../static/favicon.ico" class="st-main-logo-icon">
+          <img src="../static/img/logo.png" class="st-main-logo">
+        </div>
+      </div>
+      <div class="st-main-body">
+        <form id="mainform" method="post" enctype="multipart/form-data" style="height: 100%;" @submit="checkForm">
+          <div class="st-main-formcontent">
+            <div class="st-block st-block-upload">
+              <div class="st-block-upload-picture"><img id="upload-photo" src="../static/img/photo_logo.png" alt="image"/></div>
+              <button id="uploadBtn" type="button" class="upload-btn btn btn-primary" v-on:click="uploadPhoto">Загрузить файл</button>
+              <input id="file" type="file" name="file" style="display: none;" />
+            </div>
+            <div class="st-block st-block-model">
+              <div class="st-block-model-picture"><img id="model-photo" :src="selectedModelPic" alt="Модель"/></div>
+              <div class="">
+                <select name="models" class="form-control st-selectmodels" v-model="selectedModel" @change="changeModel()">
+                  <option v-for="model in models" type="text" :value="model.model">[[model.name]]</option>
+                </select>
+              </div>
+            </div>
+            <div class="st-block st-block-result">
+              <!-- <input type=submit value=Upload> -->
+              <div v-if="isReady" class="st-block-result-picture"><img id="result-photo" :src="result" alt="image"/></div>
+              <div v-if="!isReady && !visiblePrepareBtn" class="st-block-result-loading"><img src="../static/img/loading.gif" alt="image"/></div>
+              <button v-if="visiblePrepareBtn" id="prepareBtn" type="submit" class="prepare-btn btn btn-primary">Обработать</button>
+              <div class="error-msg-container">
+                <span class="error-msg">[[ error ]]</span>
+              </div>
+            </div>
           </div>
-          <input type=submit value=Upload>
         </form>
+      </div>
     </div>
 
-    <div>
-          {{info_mess}}
-    </div>
-
-    <img src="{{ url_for('video_feed', filename=filename, image_number=image_number) }}">
-
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src="../static/main.js"></script>
   </body>
 </html>

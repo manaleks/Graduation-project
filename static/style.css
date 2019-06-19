@@ -1,0 +1,87 @@
+html, body, .st-main {
+    height: 100%;
+}
+
+.st-main-top {
+    height: 100px;
+    background: black;
+    align-items: center;
+    display: flex;
+    padding: 0 24px;
+}
+
+.st-main-body {
+    height: calc(100% - 100px);
+}
+
+.st-main-logo-icon {
+    filter: invert(1);
+    width: 50px;
+    margin-right: 24px;
+}
+
+.st-main-formcontent {
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+}
+
+.st-block {
+    padding: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.upload-btn {
+    margin-top: 18px;
+}
+.st-block-model-picture {
+    max-height: 500px;
+}
+
+#model-photo {
+    height: 400px;
+}
+
+.st-block-upload-picture {
+    justify-content: center;
+    max-width: 100%;
+    max-height: 400px;
+    display: flex;
+}
+
+.st-block-upload-picture img {
+    height: 400px;
+    max-width: 100%;
+}
+
+.st-selectmodels {
+    margin-top: 18px;
+}
+
+.error-msg-container {
+    margin-top: 18px;
+}
+
+.error-msg {
+    color: red;
+}
+
+.prepare-btn {
+    margin-top: 18px;
+}
+
+.st-block-result-picture {
+    justify-content: center;
+    max-width: 100%;
+    max-height: 400px;
+    display: flex;
+}
+
+#result-photo {
+    height: 400px;
+    max-width: 100%;
+}

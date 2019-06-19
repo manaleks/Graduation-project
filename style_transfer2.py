@@ -1,6 +1,5 @@
 import os
-from flask import Flask 
-from flask import Response
+from flask import Flask
 from flask import request
 from flask import redirect
 from flask import url_for   
@@ -13,8 +12,6 @@ from evaluate import ffwd_different_dimensions
 
 import shutil
 from PIL import Image
-import base64
-import json
 
 app = Flask(__name__)
 
@@ -37,9 +34,6 @@ if os.path.isdir(OUTLOAD_FOLDER):
 os.mkdir(OUTLOAD_FOLDER)
 
 
-MODELS2 = [{"model":"dora-marr-network", "jpg":"dora-maar-picasso.jpg", "name":"Dora Maar Picasso"},
-            {"model":"scream.ckpt", "jpg":"scream.jpg", "name":"Scream"}]   
-
 MODELS = ["dora-marr-network", "starry-night-network",
 "la_muse.ckpt","rain_princess.ckpt","scream.ckpt",
 "udnie.ckpt","wave.ckpt", "wreck.ckpt"]                    
@@ -59,9 +53,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def getModels():
-    return json.dumps(MODELS2, default=str)
-
 # SERV
 @app.route('/', methods=['GET', 'POST'])
 def server_work():
@@ -69,17 +60,14 @@ def server_work():
         # check if the post request has the file part
         if 'file' not in request.files:
          #   flash('No file part')
-            # return redirect(request.url)
-            return json.dumps({'error': 'No selected file'})
+            return redirect(request.url)
         file = request.files['file']
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
             #return render_template('main.html', models=MODELS, info_mess='No selected file')
-            # return redirect(url_for('main', models=MODELS, info_mess='No selected file'))
+            return redirect(url_for('main', models=MODELS, info_mess='No selected file'))
             #return redirect(request.url)
-
-            return json.dumps({'error': 'No selected file'})
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             
@@ -124,9 +112,9 @@ def server_work():
             else:
                 model = MODELS[0]
 
-            return json.dumps({'model': model, 'image_number': new_upload_num, 'filename': filename})
-            # return redirect(url_for('get_file',
-                                    # model=model, image_number=new_upload_num, filename=filename))
+
+            return redirect(url_for('get_file',
+                                    model=model, image_number=new_upload_num, filename=filename))
 
     return render_template('main.html', models=MODELS, info_mess='')
 
@@ -135,9 +123,8 @@ def server_work():
 def get_file(filename,image_number,model):
 
     # check count quota
-    if len(count_quota) > 0:
-        # return render_template('main.html', models=MODELS, info_mess='sorry, quota is 2. Check after second')
-        return json.dumps({'error': 'Sorry, quota is 2. Check after second'})
+    if len(count_quota) > 2:
+        return render_template('main.html', models=MODELS, info_mess='sorry, quota is 2. Check after second')
 
 
     # chech image resolution
@@ -147,9 +134,8 @@ def get_file(filename,image_number,model):
     width, height = im.size
     print(width)
     print(height)
-    if width + height > 3500:
-        # return render_template('main.html', models=MODELS, info_mess='sorry, this file is too big')
-        return json.dumps({'error': 'sorry, this file is too big'})
+    if width + height > 4000:
+        return render_template('main.html', models=MODELS, info_mess='sorry, this file is too big')
 
     # add count
     count_quota.append(1)
@@ -171,29 +157,14 @@ def get_file(filename,image_number,model):
         count_quota.pop(0)
 
     print(filename)
-    file_extension = filename.split('.')[-1]
-    print(filename.split('.')[-1])
-    print(file_extension)
-
-    file_path = os.path.join(ready_file_path,filename)
-    # ready_im = Image.open(file_path)
-    img_data = open(file_path, 'rb' ).read()
-    # bytes_im = base64.b64encode(ready_im.tobytes())
-    img_data = "data:image/" + file_extension + ";base64," + base64.b64encode(img_data).decode()
-
-    return json.dumps({'data': img_data})
     
-    #return send_from_directory(ready_file_path, filename)
+    return send_from_directory(ready_file_path, filename)
 
 
 
 @app.route('/images/<filename>', methods=['GET', 'POST'])
 def get_image(filename):
     return send_from_directory(BASE_FOLDER+'/static/images/', filename)
-
-@app.route('/models', methods=['GET', 'POST'])
-def get_models():
-    return Response(getModels(), mimetype="text/event-stream")
 
 
 # Icon
@@ -203,6 +174,5 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
-
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(port=5000)
