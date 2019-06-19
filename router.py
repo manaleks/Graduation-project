@@ -70,7 +70,7 @@ def main():
         print(r)
         print(type(r))
         print(type(r.text))
-        print(r.text)
+        # print(r.text)
         print(type(r.content))
         i = Image.open(BytesIO(r.content))
         print(type(i))
@@ -91,27 +91,27 @@ def main():
 def video_feed(filename):
     return send_from_directory(ready_images_dir, filename)
 
+@app.route('/run_hello', methods=['POST'])
+def run_hello():
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    r = requests.post("https://manaleks.herokuapp.com/hello", headers=headers)
+
+    # save ready image
+    print(r)
+    print(type(r))
+    print(type(r.text))
+    print(r.text)
+    print(type(r.content))
+
+    return r.text
+
+
+@app.route('/hello', methods=['POST'])
+def hello():
+    return 'hello'
+
 # Icon
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-
-"""
-            url = 'https://f16dfe47.ngrok.io/'
-            #files = {'file': open('static/images/bricks.jpg', 'rb')}
-            files = {'file': open('static/images/bricks.jpg', 'rb')}
-            r = requests.post(url, files=files)
-
-            print(r)
-            print(type(r))
-            print(type(r.text))
-            print(type(r.content))
-
-            i = Image.open(BytesIO(r.content))
-            i.show()
-
-            print(i)
-            print(type(i))
-"""
