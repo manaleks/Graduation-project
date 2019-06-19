@@ -65,8 +65,8 @@ def server_work():
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
-            return render_template('server_work.html', models=MODELS, 
-                                    info_mess='No selected file')
+            #return render_template('server_work.html', models=MODELS, info_mess='No selected file')
+            return redirect(url_for('server_work', models=MODELS, info_mess='No selected file'))
             #return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -100,10 +100,17 @@ def server_work():
             path_to_save = os.path.join(app.config['UPLOAD_FOLDER'],str(new_upload_num))
             file.save(os.path.join(path_to_save, filename))
             
-            model = request.form['models']
-            # Set used model on top
-            MODELS.remove(model)
-            MODELS.insert(0, model)
+            print('start')
+            get_model = request.form.get('models')
+            print(get_model)
+
+            if get_model:
+                model = get_model
+                # Set used model on top
+                MODELS.remove(model)
+                MODELS.insert(0, model)
+            else:
+                model = MODELS[0]
 
 
             return redirect(url_for('get_file',
