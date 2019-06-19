@@ -91,7 +91,7 @@ def main():
 def video_feed(filename):
     return send_from_directory(ready_images_dir, filename)
 
-@app.route('/run_hello', methods=['POST'])
+@app.route('/run_hello')
 def run_hello():
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     r = requests.post("https://manaleks.herokuapp.com/hello", headers=headers)
