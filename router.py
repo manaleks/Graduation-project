@@ -94,7 +94,7 @@ def video_feed(filename):
 @app.route('/run_hello')
 def run_hello():
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-    r = requests.post("https://manaleks.herokuapp.com/hello", headers=headers)
+    r = requests.post("https://manaleks.herokuapp.com/hello", headers=headers, data = {'key':'value'})
 
     # save ready image
     print(r)
@@ -108,7 +108,20 @@ def run_hello():
 
 @app.route('/hello', methods=['POST'])
 def hello():
-    return 'hello'
+
+    try:
+        model = request.args.get('model')
+        print('hello get: '+ str(model))
+    except:
+        print("dont work: model = request.args.get('model')")
+
+    try:
+        model = request.form.get('models')
+        print('hello get: '+ str(model))
+    except:
+        print("dont work: model = request.args.get('model')")
+
+    return 'hello: ' + str(model)
 
 # Icon
 @app.route('/favicon.ico')
