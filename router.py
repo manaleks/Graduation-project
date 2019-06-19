@@ -13,6 +13,12 @@ from flask import send_from_directory
 from werkzeug.utils import secure_filename
 
 root_dir = sys.path[0]
+ready_images_dir = os.path.join(sys.path[0],'ready_images')
+
+# recreate inputs
+if os.path.isdir(ready_images_dir):
+    shutil.rmtree(ready_images_dir)
+os.mkdir(ready_images_dir)
 
 app = Flask(__name__)
 
@@ -26,23 +32,26 @@ def main():
         # check if the post request has the file part
         if 'file' not in request.files:
          #   flash('No file part')
-            return redirect(request.url)
+            return render_template('main.html', models=MODELS, info_mess='No selected file')
         file = request.files['file']
+
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
-            return render_template('main.html', models=MODELS, info_mess='No selected file')
-
+            return render_template('main.html', models=MODELS, info_mess='No selected filename')
         filename = file.filename
 
         print(type(file))
         print(file)
+        print(filename)
 
+        # image processing
         url = 'http://180a7fd8.ngrok.io/'
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         files = {'file': open('static/images/bricks.jpg', 'rb')}
         r = requests.post(url, headers=headers, files=files)
 
+        # save ready image
         print(r)
         print(type(r))
         print(type(r.text))
@@ -51,7 +60,7 @@ def main():
         print(type(i))
         print(i)
 
-        file_path = root_dir + '/' + filename
+        file_path = os.path.join(ready_images_dir,filename)
 
         print(file_path)
 
@@ -64,7 +73,7 @@ def main():
 
 @app.route('/video_feed/<filename>')
 def video_feed(filename):
-    return send_from_directory(root_dir, filename)
+    return send_from_directory(ready_images_dir, filename)
 
 # Icon
 @app.route('/favicon.ico')
