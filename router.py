@@ -62,7 +62,7 @@ def server_work():
     if request.method == 'POST':
 
         # check count quota
-        if len(count_quota) > max_quota:
+        if len(count_quota) > 0:
             # return render_template('main.html', models=MODELS, info_mess='sorry, quota is 2. Check after second')
             return json.dumps({'error': 'Sorry, the model is working. Try again in a few seconds'})
 
@@ -118,7 +118,6 @@ def server_work():
         if width + height > max_size:
             # return render_template('main.html', models=MODELS, info_mess='sorry, this file is too big')
             return json.dumps({'error': 'Sorry, this file is too big'})
-
 
         # add count
         count_quota.append(1)
