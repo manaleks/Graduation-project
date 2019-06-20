@@ -35,7 +35,7 @@ app = Flask(__name__)
 
 
 MODELS2 = [ {"model":"dora-marr-network", "jpg":"dora-maar-picasso.jpg", "name":"Dora Maar Picasso"},
-            {"model":"starry-noght-network", "jpg":"starry_night.jpg", "name":"Starry Night"},
+            {"model":"starry-night-network", "jpg":"starry_night.jpg", "name":"Starry Night"},
             {"model":"scream.ckpt", "jpg":"scream.jpg", "name":"Scream"},
             {"model":"la_muse.ckpt", "jpg":"la_muse.jpg", "name":"La Muse"},
             {"model":"udnie.ckpt", "jpg":"udnie.jpg", "name":"Udnie"},
