@@ -1,17 +1,22 @@
-import requests
-from PIL import Image
-from io import BytesIO
-
 import os
 import sys
 import shutil
+
 from flask import Flask
+from flask import Response
 from flask import request
 from flask import redirect
 from flask import url_for
 from flask import render_template
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
+
+import requests
+from io import BytesIO
+from PIL import Image
+import base64
+import json
+
 
 root_dir = sys.path[0]
 upload_images_dir = os.path.join(sys.path[0],'upload_images_dir')
@@ -28,9 +33,23 @@ os.mkdir(ready_images_dir)
 
 app = Flask(__name__)
 
+
+MODELS2 = [ {"model":"dora-marr-network", "jpg":"dora-maar-picasso.jpg", "name":"Dora Maar Picasso"},
+            {"model":"starry-noght-network", "jpg":"starry_night.jpg", "name":"Starry Night"},
+            {"model":"scream.ckpt", "jpg":"scream.jpg", "name":"Scream"},
+            {"model":"la_muse.ckpt", "jpg":"la_muse.jpg", "name":"La Muse"},
+            {"model":"udnie.ckpt", "jpg":"udnie.jpg", "name":"Udnie"},
+            {"model":"wave.ckpt", "jpg":"wave.jpg", "name":"Wave"},
+            {"model":"wreck.ckpt", "jpg":"wreck.jpg", "name":"Wreck"},
+            {"model":"rain_princess.ckpt", "jpg":"rain_princess.jpg", "name":"Rain princess"}
+            ]  
+
 MODELS = ["dora-marr-network", "starry-night-network",
 "la_muse.ckpt","rain_princess.ckpt","scream.ckpt",
 "udnie.ckpt","wave.ckpt", "wreck.ckpt"]
+
+def getModels():
+    return json.dumps(MODELS2, default=str)
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
@@ -139,6 +158,22 @@ def video_feed(image_number,filename):
     file_folder = os.path.join(ready_images_dir,str(image_number))
     return send_from_directory(file_folder, filename)
 
+
+@app.route('/images/<filename>', methods=['GET', 'POST'])
+def get_image(filename):
+    return send_from_directory(BASE_FOLDER+'/static/images/', filename)
+
+@app.route('/models', methods=['GET', 'POST'])
+def get_models():
+    return Response(getModels(), mimetype="text/event-stream")
+
+# Icon
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
 @app.route('/run_hello')
 def run_hello():
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -171,8 +206,6 @@ def hello():
 
     return 'hello: ' + str(model)
 
-# Icon
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5005)
