@@ -118,9 +118,7 @@ def server_work():
         print(model_name)
 
         if model_name:
-            # Set used model on top
-            MODELS.remove(model_name)
-            MODELS.insert(0, model_name)
+            pass
         else:
             model_name = MODELS[0]
         print(model_name)
@@ -129,7 +127,7 @@ def server_work():
         #print(model_url)
 
         # image processing
-        r = requests.post(url, headers=headers, files=files, data = {'models':model_name})
+        r = requests.post(url, headers=headers, files=files, data = {'models':model_name, 'work_type':'serv'})
 
         # save ready image
         print(r)
@@ -206,4 +204,6 @@ def hello():
 
     return 'hello: ' + str(model)
 
+if __name__ == "__main__":
+    app.run(debug=True, port=5005)
 
