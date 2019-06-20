@@ -22,6 +22,8 @@ root_dir = sys.path[0]
 upload_images_dir = os.path.join(sys.path[0],'upload_images_dir')
 ready_images_dir = os.path.join(sys.path[0],'ready_images_dir')
 
+url = 'https://a9c59063.ngrok.io/'
+
 # recreate upload_images_dir
 if os.path.isdir(upload_images_dir):
     shutil.rmtree(upload_images_dir)
@@ -133,7 +135,7 @@ def server_work():
         files = {'file': file_to_load_open}
 
         # make url
-        url = 'https://c6bc0db6.ngrok.io/'
+
 
 
         # get model_name
@@ -241,6 +243,14 @@ def hello():
 
     return 'hello: ' + str(model)
 
+@app.route('/change_url/<new_url>', methods=['GET'])
+def change_url(new_url):
+    global url 
+    url = 'https://' + str(new_url) + '/'
+
+    print(url)
+
+    return url
 if __name__ == "__main__":
     app.run(debug=True, port=5005)
 
