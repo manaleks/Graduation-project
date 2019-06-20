@@ -9,8 +9,11 @@ var app = new Vue({
         models: [],
         result: null,
         isReady: false,
+        
+        // Start Service
         // visiblePrepareBtn: true,
         // error: ''
+        isLoading: false,
         visiblePrepareBtn: false,
         error: 'Sorry, server is not available now. Thank you!'
     },

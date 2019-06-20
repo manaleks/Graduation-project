@@ -33,7 +33,9 @@
             <div class="st-block st-block-result">
               <!-- <input type=submit value=Upload> -->
               <div v-if="isReady" class="st-block-result-picture"><img id="result-photo" :src="result" alt="image"/></div>
-              <div v-if="!isReady && !visiblePrepareBtn" class="st-block-result-loading"><img src="../static/img/loading.gif" alt="image"/></div>
+              <!-- <div v-if="isLoading && !isReady && !visiblePrepareBtn" class="st-block-result-loading"><img src="../static/img/loading.gif" alt="image"/></div> -->
+              <div v-if="false" class="st-block-result-loading"><img src="../static/img/loading.gif" alt="image"/></div>
+              
               <button v-if="visiblePrepareBtn" id="prepareBtn" type="submit" class="prepare-btn btn btn-primary">Обработать</button>
               <div class="error-msg-container">
                 <span class="error-msg">[[ error ]]</span>
