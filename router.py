@@ -48,6 +48,11 @@ MODELS = ["dora-marr-network", "starry-night-network",
 "la_muse.ckpt","rain_princess.ckpt","scream.ckpt",
 "udnie.ckpt","wave.ckpt", "wreck.ckpt"]
 
+count_quota = []
+max_size = 3500
+max_quota = 0
+
+
 def getModels():
     return json.dumps(MODELS2, default=str)
 
@@ -55,6 +60,26 @@ def getModels():
 @app.route('/', methods=['GET', 'POST'])
 def server_work():
     if request.method == 'POST':
+
+        # check count quota
+        if len(count_quota) > max_quota:
+            # return render_template('main.html', models=MODELS, info_mess='sorry, quota is 2. Check after second')
+            return json.dumps({'error': 'Sorry, quota is 2. Check after second'})
+
+
+        # chech image resolution
+        folder_path = os.path.join(UPLOAD_FOLDER,str(image_number))
+        image_path = os.path.join(folder_path,str(filename))
+        im = Image.open(image_path)
+        width, height = im.size
+        print(width)
+        print(height)
+        if width + height > max_size:
+            # return render_template('main.html', models=MODELS, info_mess='sorry, this file is too big')
+            return json.dumps({'error': 'sorry, this file is too big'})
+
+        # add count
+        count_quota.append(1)
 
         if 'file' not in request.files:
             return json.dumps({'error': 'No selected file'})
