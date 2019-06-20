@@ -210,7 +210,7 @@ def get_file(filename,image_number,model):
         return json.dumps({'error': 'sorry, this file is too big'})
 
     # add count
-    count_quota.append(1)
+    #count_quota.append(1)
 
     # get new folders for this photo
     new_file_path = os.path.join(UPLOAD_FOLDER,str(image_number))
@@ -252,7 +252,7 @@ def get_file_style(filename,image_number,model):
         return json.dumps({'error': 'sorry, this file is too big'})
 
     # add count
-    count_quota.append(1)
+    #count_quota.append(1)
 
     # get new folders for this photo
     new_file_path = os.path.join(UPLOAD_FOLDER,str(image_number))

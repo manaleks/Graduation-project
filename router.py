@@ -64,7 +64,7 @@ def server_work():
         # check count quota
         if len(count_quota) > max_quota:
             # return render_template('main.html', models=MODELS, info_mess='sorry, quota is 2. Check after second')
-            return json.dumps({'error': 'Sorry, quota is 2. Check after second'})
+            return json.dumps({'error': 'Модель занята, пожалуйста подождите несколько секунд и повторите попытку'})
 
         if 'file' not in request.files:
             return json.dumps({'error': 'No selected file'})
@@ -154,7 +154,13 @@ def server_work():
         try:
             r = requests.post(url, headers=headers, files=files, data = {'models':model_name, 'work_type':'serv'})
         except:
+            if len(count_quota) > 0:
+                count_quota.pop(0)
             return json.dumps({'error': 'Server is not available'})
+
+        if len(count_quota) > 0:
+            count_quota.pop(0)
+
 
         # save ready image
         print(r)
