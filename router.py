@@ -66,21 +66,6 @@ def server_work():
             # return render_template('main.html', models=MODELS, info_mess='sorry, quota is 2. Check after second')
             return json.dumps({'error': 'Sorry, quota is 2. Check after second'})
 
-
-        # chech image resolution
-        folder_path = os.path.join(UPLOAD_FOLDER,str(image_number))
-        image_path = os.path.join(folder_path,str(filename))
-        im = Image.open(image_path)
-        width, height = im.size
-        print(width)
-        print(height)
-        if width + height > max_size:
-            # return render_template('main.html', models=MODELS, info_mess='sorry, this file is too big')
-            return json.dumps({'error': 'sorry, this file is too big'})
-
-        # add count
-        count_quota.append(1)
-
         if 'file' not in request.files:
             return json.dumps({'error': 'No selected file'})
         file = request.files['file']
@@ -124,6 +109,20 @@ def server_work():
         upload_file_path = os.path.join(input_folder_path,filename)
         file.save(upload_file_path)
 
+        
+        # chech image resolution
+        im = Image.open(upload_file_path)
+        width, height = im.size
+        print(width)
+        print(height)
+        if width + height > max_size:
+            # return render_template('main.html', models=MODELS, info_mess='sorry, this file is too big')
+            return json.dumps({'error': 'Sorry, this file is too big'})
+
+
+        # add count
+        count_quota.append(1)
+
 
         # prepare image processing
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -152,7 +151,10 @@ def server_work():
         #print(model_url)
 
         # image processing
-        r = requests.post(url, headers=headers, files=files, data = {'models':model_name, 'work_type':'serv'})
+        try:
+            r = requests.post(url, headers=headers, files=files, data = {'models':model_name, 'work_type':'serv'})
+        except:
+            return json.dumps({'error': 'Server is not available'})
 
         # save ready image
         print(r)
