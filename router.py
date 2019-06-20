@@ -51,19 +51,18 @@ MODELS = ["dora-marr-network", "starry-night-network",
 def getModels():
     return json.dumps(MODELS2, default=str)
 
+# SERV
 @app.route('/', methods=['GET', 'POST'])
-def main():
+def server_work():
     if request.method == 'POST':
-        # check if the post request has the file part
+
         if 'file' not in request.files:
-         #   flash('No file part')
-            return render_template('main.html', models=MODELS, info_mess='No selected file')
+            return json.dumps({'error': 'No selected file'})
         file = request.files['file']
 
-        # if user does not select file, browser also
-        # submit a empty part without filename
         if file.filename == '':
-            return render_template('main.html', models=MODELS, info_mess='No selected filename')
+            return json.dumps({'error': 'No selected file'})
+
         filename = file.filename
 
         print(type(file))
@@ -111,7 +110,7 @@ def main():
         files = {'file': file_to_load_open}
 
         # make url
-        url = 'http://180a7fd8.ngrok.io/'
+        url = 'https://c6bc0db6.ngrok.io/'
 
 
         # get model_name
@@ -147,21 +146,22 @@ def main():
         print(ready_file_path)
 
         i.save(ready_file_path)
+        
+        print(filename)
+        file_extension = filename.split('.')[-1]
+        print(filename.split('.')[-1])
+        print(file_extension)
 
-        return render_template('main.html', models=MODELS, info_mess='all_ok', image_number=image_number, filename=filename)
+        # ready_im = Image.open(file_path)
+        img_data = open(ready_file_path, 'rb' ).read()
+        # bytes_im = base64.b64encode(ready_im.tobytes())
+        img_data = "data:image/" + file_extension + ";base64," + base64.b64encode(img_data).decode()
+
+        return json.dumps({'data': img_data})
+
+        #return render_template('main.html', models=MODELS, info_mess='all_ok', image_number=image_number, filename=filename)
 
     return render_template('main.html', models=MODELS, info_mess='')
-
-
-@app.route('/video_feed/<image_number>/<filename>')
-def video_feed(image_number,filename):
-    file_folder = os.path.join(ready_images_dir,str(image_number))
-    return send_from_directory(file_folder, filename)
-
-
-@app.route('/images/<filename>', methods=['GET', 'POST'])
-def get_image(filename):
-    return send_from_directory(BASE_FOLDER+'/static/images/', filename)
 
 @app.route('/models', methods=['GET', 'POST'])
 def get_models():
@@ -207,5 +207,3 @@ def hello():
     return 'hello: ' + str(model)
 
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5005)

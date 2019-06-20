@@ -6,3 +6,5 @@ db.sqlite3
 models/
 results/
 inputs/
+ready_images_dir/
+upload_images_dir/

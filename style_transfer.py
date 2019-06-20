@@ -124,9 +124,8 @@ def server_work():
             else:
                 model = MODELS[0]
 
-            return json.dumps({'model': model, 'image_number': new_upload_num, 'filename': filename})
-            # return redirect(url_for('get_file',
-                                    # model=model, image_number=new_upload_num, filename=filename))
+            #return json.dumps({'model': model, 'image_number': new_upload_num, 'filename': filename})
+            return redirect(url_for('get_file', model=model, image_number=new_upload_num, filename=filename))
 
     return render_template('main.html', models=MODELS, info_mess='')
 
@@ -170,6 +169,10 @@ def get_file(filename,image_number,model):
     if len(count_quota) > 0:
         count_quota.pop(0)
 
+    return send_from_directory(ready_file_path, filename)
+
+    
+"""
     print(filename)
     file_extension = filename.split('.')[-1]
     print(filename.split('.')[-1])
@@ -182,8 +185,8 @@ def get_file(filename,image_number,model):
     img_data = "data:image/" + file_extension + ";base64," + base64.b64encode(img_data).decode()
 
     return json.dumps({'data': img_data})
+"""    
     
-    #return send_from_directory(ready_file_path, filename)
 
 
 

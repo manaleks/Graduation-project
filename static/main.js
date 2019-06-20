@@ -55,18 +55,9 @@ var app = new Vue({
                 return response.json();
             }).then(function(data) {
                 if (data && !data['error']) {
-                    fetch('/uploads/' + data['model'] + '/' + data['image_number'] + '/' + data['filename']).then(responce1 => {
-                        return responce1.json()
-                    }).then(function(data1) {
-                        if (data1 && !data1['error']) {
-                            app.result = data1['data'];
-                            app.isReady = true;
-                            app.visiblePrepareBtn = true;
-                        } else {
-                            app.error = data1['error'];
-                            app.visiblePrepareBtn = true;
-                        }
-                    });
+                    app.result = data['data'];
+                    app.isReady = true;
+                    app.visiblePrepareBtn = true;
 
                 } else {
                     app.error = data['error'];
