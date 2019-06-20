@@ -7,10 +7,12 @@ var app = new Vue({
         selectedModelPic: null,
         selectedModel: null,
         models: [],
-        error: '',
         result: null,
         isReady: false,
-        visiblePrepareBtn: true
+        // visiblePrepareBtn: true,
+        // error: ''
+        visiblePrepareBtn: false,
+        error: 'Sorry, server is not available now. Thank you!'
     },
     filters: {
     },
